@@ -17,6 +17,7 @@
 `define SV_SH_DPI_TASKS
 
    import "DPI-C" context task test_main(output int unsigned exit_code);
+   import "DPI-C" context task int_handler(input int unsigned int_num);
    import "DPI-C" context function void  host_memory_putc(input longint unsigned addr, byte data);         // even though a int is used, only the lower 8b are used
    import "DPI-C" context function byte  host_memory_getc(input longint unsigned addr);
 
@@ -24,6 +25,7 @@
    export "DPI-C" task sv_map_host_memory;
    export "DPI-C" task cl_peek;
    export "DPI-C" task cl_poke;
+   export "DPI-C" task sv_int_ack;
    export "DPI-C" task sv_pause;
 
    task sv_printf(input string msg);
@@ -40,6 +42,10 @@
    
    task cl_poke(input longint unsigned addr, int unsigned data);
       tb.sh.poke(addr, data);
+   endtask
+
+   task sv_int_ack(input int unsigned int_num);
+      tb.sh.set_ack_bit(int_num);
    endtask
 
    task sv_pause(input int x);

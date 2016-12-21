@@ -147,6 +147,9 @@ module tb();
    logic [31:0]         ddr_sh_stat_rdata[2:0];
    logic [7:0]          ddr_sh_stat_int[2:0];
    
+   logic [15:0]         cl_sh_irq_req;
+   logic [15:0]         sh_cl_irq_ack;
+
 `include "tb_ddr.svh"
    
    //------------------------------------------------------
@@ -310,6 +313,10 @@ sh_bfm sh(
    .cl_sh_pcis_rvalid(cl_sh_pcis_rvalid),
    .sh_cl_pcis_rready(sh_cl_pcis_rready),
           
+`ifndef NO_XDMA
+   .cl_sh_irq_req(cl_sh_irq_req),
+   .sh_cl_irq_ack(sh_cl_irq_ack),
+`else
    //-----------------------------------------
    // CL MSIX
    //-----------------------------------------
@@ -317,7 +324,8 @@ sh_bfm sh(
    .cl_sh_msix_vec(),
    .sh_cl_msix_int_sent(),
    .sh_cl_msix_int_ack(),
-    
+`endif
+
    .cl_sh_aurora_channel_up(),
    .sh_aurora_stat_addr(sh_aurora_stat_addr),
    .sh_aurora_stat_wr(sh_aurora_stat_wr),
@@ -590,6 +598,20 @@ sh_bfm sh(
       .cl_sh_ddr_rready(cl_sh_ddr_rready),
    
       .sh_cl_ddr_is_ready(sh_cl_ddr_is_ready),
+
+`ifndef NO_XDMA
+      .cl_sh_irq_req(cl_sh_irq_req),
+      .sh_cl_irq_ack(sh_cl_irq_ack),
+`else
+ `ifndef VU190
+  `ifdef MSIX_PRESENT
+      .cl_sh_msix_int(),
+      .cl_sh_msix_vec(),
+      .sh_cl_msix_int_sent(1'b0),
+      .sh_cl_msix_int_ack(1'b0),
+  `endif
+ `endif  
+`endif
 
 `ifdef ENABLE_CS_DEBUG
       //Debug (chipscope)

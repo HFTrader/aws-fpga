@@ -135,12 +135,17 @@ module sh_bfm #(
    input [1:0]                 cl_sh_pcis_rresp[NUM_PCIE-1:0],
    input [NUM_PCIE-1:0]        cl_sh_pcis_rlast,
    input [NUM_PCIE-1:0]        cl_sh_pcis_rvalid,
-   output logic [NUM_PCIE-1:0] sh_cl_pcis_rready,
+   output logic [NUM_PCIE-1:0] sh_cl_pcis_rready
 
-`ifndef VU190    
+`ifndef NO_XDMA
+   ,
+   input [15:0]         cl_sh_irq_req,
+   output logic [15:0]  sh_cl_irq_ack
+`else
    //-----------------------------------------
    // CL MSIX
    //-----------------------------------------
+    ,
     input               cl_sh_msix_int,
     input [7:0]         cl_sh_msix_vec,
     output logic        sh_cl_msix_int_sent,
@@ -874,6 +879,48 @@ typedef struct {
       
    end
 
+
+`ifndef NO_XDMA
+   //=================================================
+   //
+   // Interrupt handling
+   //
+   //=================================================
+   logic [15:0]  int_ack;
+   logic [15:0]  int_pend;
+
+   initial begin
+      int_ack = 16'h0000;
+      int_pend = 16'h0000;
+   end
+
+   always @(posedge clk_core) begin
+      for (int idx=0; idx<16; idx++) begin
+         if (cl_sh_irq_req[idx] == 1'b1) begin
+            int_pend |= 1'b1 << idx;
+         end
+      end
+
+      if (|int_ack) begin
+        for (int idx=0; idx<16; idx++) begin
+           if (int_ack[idx] == 1'b1) begin
+              $display("[%t] : Sending ack for interrupt %2d", $realtime, idx);
+           end
+        end
+      end
+
+      sh_cl_irq_ack <= int_ack;
+      int_ack = 16'h0000;
+   end
+
+   always @(posedge clk_core) begin
+      for (int idx=0; idx<16; idx++) begin
+         if (int_pend[idx] == 1'b1) begin
+            tb.int_handler(idx);
+         end
+      end
+   end
+`endif
    
    //==========================================================
 
@@ -1146,6 +1193,11 @@ typedef struct {
       tb.use_c_host_memory = 1'b1;      
    endtask // map_host_memory
    
+   task set_ack_bit(input int int_num);
+      int_ack[int_num] = 1'b1;
+      int_pend[int_num] = 1'b0;
+   endtask
+
    task poke(input logic [63:0] addr, logic [31:0] data, logic [5:0] id = 6'h0);
       AXI_Command axi_cmd;
       AXI_Data    axi_data;

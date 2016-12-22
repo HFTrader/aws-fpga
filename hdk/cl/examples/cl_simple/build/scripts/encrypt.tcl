@@ -32,4 +32,7 @@ $CL_DIR/build/src_post_encryption/mem_scrb.sv  \
 $CL_DIR/build/src_post_encryption/cl_tst_scrb.sv  \
 $CL_DIR/build/src_post_encryption/cl_int_tst.sv  
 
+#Use the command below to encrypt VHDL files.
+#encrypt -k $HDK_SHELL_DIR/build/scripts/vivado_vhdl_keyfile.txt -lang vhdl
+
 #---- End of section replaced by Developr ---

@@ -77,7 +77,7 @@ You need to prepare the following information:
 
 To upload your DCP to S3, 
 
-    $ ﻿aws s3 mb s3://<bucket-name>                # Create an S3 bucket (choose a unique bucket name)
+    $ aws s3 mb s3://<bucket-name>                # Create an S3 bucket (choose a unique bucket name)
     $ aws s3 cp *.SH_CL_routed.dcp \              # Upload the DCP file to S3
              s3://<bucket-name>/cl_simple.dcp
 
@@ -103,7 +103,7 @@ The output of this command includes two identifiers that refer to your AFI:
 After the AFI generation is complete, AWS will put the AFI generation logs into the bucket location provided by the developer and notify them
 by email.
 
-**NOTE**: Preview-program customers without access to the AWS CLI EC2 action `create-fpga-image` should instead follow the instructions [here](https://github.com/aws/aws-fpga/tree/master/hdk/cl/examples#method-2-during-f1-preview-and-before-aws-ec2-cli-action-create-fpga-image-is-available).  
+**NOTE**: Preview-program customers without access to the AWS CLI EC2 action `create-fpga-image` should instead follow the instructions [here](https://github.com/aws/aws-fpga/tree/master/hdk/cl/examples#3-submit-the-design-checkpoint-to-aws-to-register-the-afi).  
 
 ## About Encryption 
    Developer RTL is encrypted using IEEE 1735 V2 encryption.  This level of encryption protects both the raw source files and the implemented design.  

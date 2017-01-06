@@ -81,16 +81,61 @@ You need to prepare the following information:
 
 1. Name of the logic design.
 2. Generic description of the logic design.
-3. PCI IDs: Device, Vendor, Subsystem, SubsystemVendor (these IDs should be found in the README files in the respective CL example directory).
+3. PCI IDs: Device, Vendor, Subsystem, SubsystemVendor.
 4. Location of the DCP object (S3 bucket name and key).
 5. Location of the directory to write logs (S3 bucket name and key).
 6. Version of the AWS Shell.
 
+**NOTE**: The PCI IDs for the example CLs should be found in the README files in the respective CL example directory. 
+If you are building a custom CL, then you need to incorporate these values in your design as shown in the [AWS Shell Interface Specifications](https://github.com/aws/aws-fpga/blob/master/hdk/docs/AWS_Shell_Interface_Specification.md#pcie-ids).
+ 
 To upload your DCP to S3,
 
-    $ ﻿aws s3 mb s3://<bucket-name>                # Create an S3 bucket (choose a unique bucket name)
+    $ aws s3 mb s3://<bucket-name>                # Create an S3 bucket (choose a unique bucket name)
     $ aws s3 cp *.SH_CL_routed.dcp \              # Upload the DCP file to S3
              s3://<bucket-name>/cl_simple.dcp
+
+Now you need to provide AWS (Account ID: 365015490807) the appropriate [read/write permissions](http://docs.aws.amazon.com/AmazonS3/latest/dev/example-walkthroughs-managing-access-example2.html) to your S3 buckets. 
+Below is a sample policy.
+
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "Bucket level permissions",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "arn:aws:iam::365015490807:root"
+                },
+                "Action": [
+                    "s3:ListBucket"
+                ],
+                "Resource": "arn:aws:s3:::<bucket_name>"
+            },
+            {
+                "Sid": "Object read permissions",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "arn:aws:iam::365015490807:root"
+                },
+                "Action": [
+                    "s3:GetObject"
+                ],
+                "Resource": "arn:aws:s3:::<dcp_bucket_name>/<dcp_filename>"
+            },
+            {
+                "Sid": "Folder write permissions",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "arn:aws:iam::365015490807:root"
+                },
+                "Action": [
+                    "s3:PutObject"
+                ],
+                "Resource": "arn:aws:s3:::<log_bucket_name>/*"
+            }
+        ]
+    }
 
 To generate the AFI, follow one of the two methods listed below.
 After the AFI generation is complete, AWS will put the logs into the bucket location provided by the developer and notify them
@@ -122,50 +167,7 @@ The output of this command includes two identifiers that refer to your AFI:
     An example AGFI ID is **`agfi-01234567890abcdef`**.
 
 #### Method 2: During F1 preview and before AWS EC2 CLI action `create-fpga-image` is available
-
-Add a policy to the created S3 bucket granting [read/write permissions](http://docs.aws.amazon.com/AmazonS3/latest/dev/example-walkthroughs-managing-access-example2.html) to our team's account (Account ID: 371834676912).
-A sample policy is shown below.
-
-    {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Sid": "Bucket level permissions",
-                "Effect": "Allow",
-                "Principal": {
-                    "AWS": "arn:aws:iam::371834676912:root"
-                },
-                "Action": [
-                    "s3:ListBucket"
-                ],
-                "Resource": "arn:aws:s3:::<bucket_name>"
-            },
-            {
-                "Sid": "Object read permissions",
-                "Effect": "Allow",
-                "Principal": {
-                    "AWS": "arn:aws:iam::371834676912:root"
-                },
-                "Action": [
-                    "s3:GetObject"
-                ],
-                "Resource": "arn:aws:s3:::<dcp_bucket_name>/<dcp_filename>"
-            },
-            {
-                "Sid": "Folder write permissions",
-                "Effect": "Allow",
-                "Principal": {
-                    "AWS": "arn:aws:iam::371834676912:root"
-                },
-                "Action": [
-                    "s3:PutObject"
-                ],
-                "Resource": "arn:aws:s3:::<log_bucket_name>/*"
-            }
-        ]
-    }
-
-Then, send an email to AWS (email TBD) providing the information listed earlier (numbered 1-6), in addition to your **AWS Account ID number**.
+Simply send an email to AWS (email TBD) providing the information listed earlier (numbered 1-6), in addition to your **AWS Account ID number**.
 
 
 # Step by step guide how to load and test a registered AFI from within an F1 instance

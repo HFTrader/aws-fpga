@@ -190,12 +190,16 @@ Execute the following:
 * There is a default limit of eight AFIs per AMI, if you need more, please reach out to AWS with your use case and we can adjust your limit.
 * FPGA Developer AMI's are owned by AWS and you can not associate your AFI with them.
   * If you are developing using the FPGA Developer AMI's, just create a new image of your instance after you are done developing and that will create an AMI of your instance that you own.
-    $ aws create-image --instance-id <Instance ID> --name <My Own Image Name>
+  
+    
+    $ aws ec2 create-image --instance-id <Instance ID> --name <My Own Image Name>
+  
   * This will create a new AMI of the current state of your instance and you would be able to associate an AFI with this AMI.
   * You would have to start your F1 Instance with this new image as that load commands would only work on associated AMI's
 
 * To associate, simply invoke the following AWS EC2 CLI command.
 
+    
     $ aws ec2 associate-fpga-image --fpga-image-id <AFI_ID> --image-id <AMI_ID>
 
 **NOTE**: The AWS CLI commands use the AFI ID (not the AGFI ID).

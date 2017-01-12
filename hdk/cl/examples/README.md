@@ -167,7 +167,7 @@ The output of this command includes two identifiers that refer to your AFI:
     An example AGFI ID is **`agfi-01234567890abcdef`**.
 
 #### Method 2: During F1 preview and before AWS EC2 CLI action `create-fpga-image` is available
-Simply send an email to AWS (email TBD) providing the information listed earlier (numbered 1-6), in addition to your **AWS Account ID number**.
+Simply send an email to f1-preview-afi-generation@amazon.com providing the information listed earlier (numbered 1-6), in addition to your **AWS Account ID number**.
 
 
 # Step by step guide how to load and test a registered AFI from within an F1 instance

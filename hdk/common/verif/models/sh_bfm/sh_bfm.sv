@@ -99,7 +99,7 @@ module sh_bfm #(
    input [NUM_PCIE-1:0]        cl_sh_pcim_rready,
 
    output logic[1:0] cfg_max_payload[NUM_PCIE-1:0],               //Max payload size - 00:128B, 01:256B, 10:512B
-   output logic[2:0] cfg_max_read_req[NUM_PCIE-1:0],              //Max read requst size - 000b:128B, 001b:256B, 010b:512B, 011b:1024B
+   output logic[2:0] cfg_max_read_req[NUM_PCIE-1:0],              //Max read request size - 000b:128B, 001b:256B, 010b:512B, 011b:1024B
                                                                   // 100b-2048B, 101b:4096B
 
 

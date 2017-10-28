@@ -21,7 +21,7 @@ module tb();
    logic [1:0] sh_cl_pwr_state;
 
    logic [1:0] cfg_max_payload[NUM_PCIE-1:0];               //Max payload size - 00:128B, 01:256B, 10:512B
-   logic [2:0] cfg_max_read_req[NUM_PCIE-1:0];              //Max read requst size - 000b:128B, 001b:256B, 010b:512B, 011b:1024B
+   logic [2:0] cfg_max_read_req[NUM_PCIE-1:0];              //Max read request size - 000b:128B, 001b:256B, 010b:512B, 011b:1024B
 
    logic [31:0] sh_cl_ctl0;
    logic [31:0] sh_cl_ctl1;
@@ -273,7 +273,7 @@ sh_bfm sh(
    .cl_sh_pcim_rready(cl_sh_pcim_rready),
 
    .cfg_max_payload(cfg_max_payload),               //Max payload size - 00:128B, 01:256B, 10:512B
-   .cfg_max_read_req(cfg_max_read_req),              //Max read requst size - 000b:128B, 001b:256B, 010b:512B, 011b:1024B
+   .cfg_max_read_req(cfg_max_read_req),              //Max read request size - 000b:128B, 001b:256B, 010b:512B, 011b:1024B
                                                                   // 100b-2048B, 101b:4096B
 
 
